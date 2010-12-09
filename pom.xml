@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
     http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>loci</groupId>
     <artifactId>loci-base-pom</artifactId>
@@ -12,8 +13,8 @@
 
   <groupId>loci</groupId>
   <artifactId>jvmlink</artifactId>
-  <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
+
   <name>JVMLink</name>
   <description>A library for communicating between a Java Virtual Machine and other programs (e.g., C++ applications) via IP over localhost (or remotely).</description>
   <url>http://loci.wisc.edu/software/jvmlink</url>
@@ -28,7 +29,6 @@
   </licenses>
 
   <dependencies>
-    <!-- loci -->
     <dependency>
       <groupId>loci</groupId>
       <artifactId>loci-common</artifactId>
