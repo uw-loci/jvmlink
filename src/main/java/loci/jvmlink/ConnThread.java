@@ -55,8 +55,8 @@ import loci.common.ReflectedUniverse;
  * Thread for managing a client/server socket connection.
  *
  * <dl><dt><b>Source code:</b></dt>
- * <dd><a href="http://dev.loci.wisc.edu/trac/java/browser/trunk/legacy/jvmlink/src/main/java/loci/jvmlink/ConnThread.java">Trac</a>,
- * <a href="http://dev.loci.wisc.edu/svn/java/trunk/legacy/jvmlink/src/main/java/loci/jvmlink/ConnThread.java">SVN</a></dd></dl>
+ * <dd><a href="http://dev.loci.wisc.edu/trac/software/browser/trunk/legacy/jvmlink/src/main/java/loci/jvmlink/ConnThread.java">Trac</a>,
+ * <a href="http://dev.loci.wisc.edu/svn/software/trunk/legacy/jvmlink/src/main/java/loci/jvmlink/ConnThread.java">SVN</a></dd></dl>
  *
  * @author Hidayath Ansari
  */
