@@ -144,12 +144,14 @@ public class JVMLinkServer implements Runnable {
         try {
           int num = Integer.parseInt(args[i]);
           if (num < MIN_PORT || num > MAX_PORT) {
-            System.out.println("Invalid port: " + num);
+            System.err.println("Invalid port: " + num);
+            return;
           }
           else port = num;
         }
         catch (NumberFormatException exc) {
-          System.out.println("Unknown parameter: " + args[i]);
+          System.err.println("Unknown parameter: " + args[i]);
+          return;
         }
       }
     }
