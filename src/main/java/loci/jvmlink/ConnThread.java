@@ -684,7 +684,18 @@ public class ConnThread extends Thread {
   private void exec() throws IOException, ReflectException {
     String cmd = readString();
     debug("exec: " + cmd);
-    r.exec(cmd);
+    try {
+      r.exec(cmd);
+      writeInt(0);
+      out.flush();
+    } catch (ReflectException exc) {
+      writeInt(1);
+      out.flush();
+      writeString(exc.getMessage());
+      out.flush();
+
+      throw exc;
+    }
   }
 
   // - I/O helper methods -

@@ -53,6 +53,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //TODO: clear memory at appropriate points.
 
+JVMException::JVMException(const std::string& aMessage) throw()
+{
+	mMessage = aMessage;
+}
+
+JVMException::~JVMException() throw()
+{
+}
+
+const char* JVMException::what() const throw()
+{
+	return mMessage.c_str();
+}
+
+
 JVMLinkClient::JVMLinkClient(void)
 {
 }
@@ -63,7 +78,7 @@ JVMLinkClient::~JVMLinkClient(void)
 
 // -- Public API methods --
 
-void JVMLinkClient::startJava(int arg_port, const std::string& classpath) {
+void JVMLinkClient::startJava(unsigned short arg_port, const std::string& classpath) {
 	port = arg_port == 0 ? DEFAULT_PORT : arg_port;
 	std::stringstream tmpportstr;
 	tmpportstr << port;
@@ -234,6 +249,12 @@ void JVMLinkClient::exec(const std::string& command) {
 	debug("exec: " << command);
 	sendInt(EXEC_CMD);
 	sendMessage(command);
+	int status = readInt();
+	if (status != 0) {
+		std::string vMessage = *readString();
+		JVMException vJVMException(vMessage);
+		throw vJVMException;
+	}
 }
 
 void JVMLinkClient::setVar(JVMLinkObject* obj) {

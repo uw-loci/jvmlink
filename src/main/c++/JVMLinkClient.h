@@ -41,10 +41,23 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define debug(msg) ((void)0)
 //#define debug(msg) std::cout << "JVMLinkClient: " << msg << std::endl
 
+class JVMException : public std::exception
+{
+public:
+	JVMException(const std::string& aMessage) throw ();
+	virtual ~JVMException() throw ();
+
+	virtual const char* what() const throw();
+
+private:
+	std::string mMessage;
+};
+
+
 class JVMLinkClient
 {
 private:
-	int port;
+	unsigned short port;
 #ifdef _WIN32
 	SOCKET conn;
 #else
@@ -67,7 +80,7 @@ public:
 	};
 
 	JVMLinkClient();
-	void startJava(int, const std::string&);
+	void startJava(unsigned short, const std::string&);
 	void shutJava();
 	ConnectionCode establishConnection();
 	int closeConnection();
