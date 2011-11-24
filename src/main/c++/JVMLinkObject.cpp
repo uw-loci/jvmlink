@@ -35,6 +35,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 JVMLinkObject::JVMLinkObject(const std::string& name) {
 	this->name = name;
+	this->size = 0;
+	this->length = 0;
+	this->type = NULL_TYPE;
+	this->insideType = NULL_TYPE;
+	this->data = NULL;
 }
 
 // Constructor for single primitives
@@ -43,6 +48,7 @@ JVMLinkObject::JVMLinkObject(const std::string& name, Type type, const void* dat
 	this->size = getSize(type);
 	this->length = 1;
 	this->type = type;
+	this->insideType = NULL_TYPE;
 	this->data = data;
 }
 
