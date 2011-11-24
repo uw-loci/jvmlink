@@ -85,7 +85,7 @@ public:
 	ConnectionCode establishConnection();
 	int closeConnection();
 	JVMLinkObject* getVar(const std::string&);
-	void setVar(JVMLinkObject*);
+	void setVar(const JVMLinkObject&);
 	void setVar(const std::string&, int);
 	void setVar(const std::string&, int*, int);
 	void setVar(const std::string&, std::string*);

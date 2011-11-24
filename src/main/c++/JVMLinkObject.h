@@ -70,15 +70,15 @@ private:
 
 public:
 	JVMLinkObject(const std::string&);
-	JVMLinkObject(const std::string&, Type, void*);
-	JVMLinkObject(const std::string&, Type, int, void*);
+	JVMLinkObject(const std::string&, Type, const void*);
+	JVMLinkObject(const std::string&, Type, int, const void*);
 
 	~JVMLinkObject(void);
 
 	std::string name;
 	int size, length;
 	Type type, insideType;
-	void* data;
+	const void* data;
 
 	int getDataAsInt();
 	int* getDataAsIntArray();

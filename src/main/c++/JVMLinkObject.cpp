@@ -38,7 +38,7 @@ JVMLinkObject::JVMLinkObject(const std::string& name) {
 }
 
 // Constructor for single primitives
-JVMLinkObject::JVMLinkObject(const std::string& name, Type type, void* data) {
+JVMLinkObject::JVMLinkObject(const std::string& name, Type type, const void* data) {
 	this->name = name;
 	this->size = getSize(type);
 	this->length = 1;
@@ -47,7 +47,7 @@ JVMLinkObject::JVMLinkObject(const std::string& name, Type type, void* data) {
 }
 
 // Constructor for arrays
-JVMLinkObject::JVMLinkObject(const std::string& name, Type type, int length, void* data) {
+JVMLinkObject::JVMLinkObject(const std::string& name, Type type, int length, const void* data) {
 	this->name = name;
 	this->size = getSize(type);
 	this->length = length;
