@@ -3,6 +3,9 @@
 //      are changed infrequently
 //
 
+// this header is required for Windows only
+#ifdef _WIN32
+
 #if !defined(AFX_STDAFX_H__59F83989_2D03_11D6_AA7C_00C026A39668__INCLUDED_)
 #define AFX_STDAFX_H__59F83989_2D03_11D6_AA7C_00C026A39668__INCLUDED_
 
@@ -29,3 +32,5 @@
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_STDAFX_H__59F83989_2D03_11D6_AA7C_00C026A39668__INCLUDED_)
+
+#endif // _WIN32

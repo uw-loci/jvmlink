@@ -33,12 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "stdafx.h"
 #include "JVMLinkObject.h"
 
-JVMLinkObject::JVMLinkObject(CString name) {
+JVMLinkObject::JVMLinkObject(std::string name) {
 	this->name = name;
 }
 
 // Constructor for single primitives
-JVMLinkObject::JVMLinkObject(CString name, Type type, void* data) {
+JVMLinkObject::JVMLinkObject(std::string name, Type type, void* data) {
 	this->name = name;
 	this->size = getSize(type);
 	this->length = 1;
@@ -47,7 +47,7 @@ JVMLinkObject::JVMLinkObject(CString name, Type type, void* data) {
 }
 
 // Constructor for arrays
-JVMLinkObject::JVMLinkObject(CString name, Type type, int length, void* data) {
+JVMLinkObject::JVMLinkObject(std::string name, Type type, int length, void* data) {
 	this->name = name;
 	this->size = getSize(type);
 	this->length = length;
@@ -71,13 +71,13 @@ int* JVMLinkObject::getDataAsIntArray() {
 	return retval;
 }
 
-CString* JVMLinkObject::getDataAsString() {
-	CString* retval = (CString*) data;
+std::string* JVMLinkObject::getDataAsString() {
+	std::string* retval = (std::string*) data;
 	return retval;
 }
 
-CString* JVMLinkObject::getDataAsStringArray() {
-	CString* retval = (CString*) data;
+std::string* JVMLinkObject::getDataAsStringArray() {
+	std::string* retval = (std::string*) data;
 	return retval;
 }
 

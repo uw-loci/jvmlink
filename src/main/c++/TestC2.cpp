@@ -30,10 +30,18 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "stdafx.h"
+#ifdef _WIN32
+#include <stdafx.h>
+#else
+#include <unistd.h> // for usleep()
+#endif
+
 #include "JVMLinkClient.h"
+
 #include <ctime> // for time()
 #include <cstdlib> // for srand() and rand()
+#include <iostream> // for cout and cerr
+#include <stdio.h> // for getchar
 
 bool randomBool() {
 	return rand() % 2 == 0;
@@ -94,18 +102,24 @@ void printShorts(short* values, int len) {
 	for (int i=0; i<len; i++) std::cout << " " << values[i];
 }
 
-void printStrings(CString* values, int len) {
+void printStrings(std::string* values, int len) {
 	for (int i=0; i<len; i++) {
 		std::cout << "\t" << values[i] << std::endl;
 	}
 }
 
 // Tests the JVMLink API.
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
 	JVMLinkClient *p = new JVMLinkClient();
 	p->startJava(20345, "jvmlink.jar");
-	while (p->establishConnection() != JVMLinkClient::CONNECTION_SUCCESS) Sleep(250);
+	while (p->establishConnection() != JVMLinkClient::CONNECTION_SUCCESS) {
+#ifdef _WIN32
+		Sleep(250);
+#else
+		usleep(250 * 1000);
+#endif
+	}
 
 	srand((int) time(0));
 
@@ -166,8 +180,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	JVMLinkObject* jvmShort = p->getVar("myShort");
 	std::cout << "TestC2: getVar: myShort == " << jvmShort->getDataAsShort() << std::endl;
 
-	// CString variables
-	CString myString = "<<The quick brown fox jumps over the lazy dog.>>";
+	// std::string variables
+	std::string myString = "<<The quick brown fox jumps over the lazy dog.>>";
 	p->setVar("myString", &myString);
 	std::cout << "TestC2: setVar: myString -> " << myString << std::endl;
 	JVMLinkObject* jvmString = p->getVar("myString");
@@ -207,7 +221,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		myShorts[i] = randomShort();
 	}
 
-	CString* myStrings = new CString[6];
+	std::string* myStrings = new std::string[6];
 	myStrings[0] = "\"There was an Old Man with a beard,";
 	myStrings[1] = "Who said, 'It is just as I feared!";
 	myStrings[2] = "Two Owls and a Hen,";
@@ -295,7 +309,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	printShorts(jvmShorts->getDataAsShortArray(), num);
 	std::cout << " ]" << std::endl;
 
-	// CString arrays
+	// std::string arrays
 	p->setVar("myStrings", myStrings, 6);
 	std::cout << "TestC2: setVar: myStrings -> [" << std::endl;
 	for (int i=0; i<6; i++) {
@@ -357,8 +371,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	delete largeBytes;
 
-	fprintf(stdout, "\n\nPress enter to shut down the server and exit...\n");
+	std::cout << std::endl << std::endl << "Press enter to shut down the server and exit..." << std::endl;
+#ifdef _WIN32
 	_fgetchar();
+#else
+	getchar();
+#endif
 
 	// free Java resources
 	p->exec("frame.dispose()");

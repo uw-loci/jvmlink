@@ -30,9 +30,24 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifdef _WIN32
 #include "stdafx.h"
+#include <windows.h>
+#else
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <netdb.h>
+#endif
+
 #include "JVMLinkClient.h"
-#include <Windows.h>
+
+#include <iostream>
+#include <string>
+#include <string.h>
+#include <sstream>
+#include <stdlib.h>
 
 #define DEFAULT_PORT 20345
 
@@ -48,15 +63,37 @@ JVMLinkClient::~JVMLinkClient(void)
 
 // -- Public API methods --
 
-void JVMLinkClient::startJava(int arg_port, CString classpath) {
-	port = arg_port == NULL ? DEFAULT_PORT : arg_port;
-	CString command;
+void JVMLinkClient::startJava(int arg_port, std::string classpath) {
+	port = arg_port == 0 ? DEFAULT_PORT : arg_port;
+	std::stringstream tmpportstr;
+	tmpportstr << port;
+	const std::string portstr = tmpportstr.str();
+
+#ifdef _WIN32
 	// NB: Toggle comments to control debugging output for the server.
-	command.Format("-cp %s loci.jvmlink.JVMLinkServer %d", classpath, port);
-	//command.Format("-cp %s loci.jvmlink.JVMLinkServer -debug %d", classpath, port);
+	const std::string command = "-cp " + classpath + " loci.jvmlink.JVMLinkServer " + portstr;
+	//const std::string command = "-cp " + classpath + " loci.jvmlink.JVMLinkServer -debug " + portstr;
 	debug("java " << command);
 	ShellExecute(NULL, "open", "javaw.exe" , command, "", SW_SHOW);
 	//ShellExecute(NULL, "open", "java.exe" , command, "", SW_SHOW);
+#else
+	pid_t vProcID = vfork();
+	if (vProcID == 0) {
+		// executed by child process
+		execlp("java", "java", "-cp", classpath.c_str(), "loci.jvmlink.JVMLinkServer", portstr.c_str(), "-debug", (char*)NULL);
+		//execlp("java", "java", "-cp", classpath.c_str(), "loci.jvmlink.JVMLinkServer", portstr.c_str(), (char*)NULL);
+
+		std::cerr << "Error: Child failed to execute process." << std::endl;
+		_exit(1);
+	} else if (vProcID < 0) {
+		// failed to fork
+		debug("Error: Failed to fork, will exit now.");
+		exit(1);
+	} else {
+		// Code only executed by parent process
+		// TODO: check if the forked child is alive and working
+	}
+#endif
 }
 
 void JVMLinkClient::shutJava() {
@@ -65,11 +102,13 @@ void JVMLinkClient::shutJava() {
 }
 
 JVMLinkClient::ConnectionCode JVMLinkClient::establishConnection() {
+	const std::string servername = "127.0.0.1";
+
+#ifdef _WIN32
 	WSADATA wsaData;
 	struct hostent *hp;
 	unsigned int addr;
 	struct sockaddr_in server;
-	CString servername = "127.0.0.1"; 
 
 	int wsaret=WSAStartup(0x101,&wsaData);
 	if (wsaret) return WINSOCK_ERR;
@@ -99,23 +138,59 @@ JVMLinkClient::ConnectionCode JVMLinkClient::establishConnection() {
 	if (connect(conn,(struct sockaddr*)&server,sizeof(server))) {
 		closesocket(conn);
 		debug("No server response on port " << port);
-		return RESPONSE_ERR;	
+		return RESPONSE_ERR;
 	}
+#else
+	debug("starting to create socket");
+	struct addrinfo hints;
+	struct addrinfo *res;
+
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_UNSPEC;  // use IPv4 or IPv6, whichever
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE;  // fill in my IP for me
+
+	// do the lookup
+	std::stringstream tmpportstr;
+	tmpportstr << port;
+	const std::string portstr = tmpportstr.str();
+	getaddrinfo(servername.c_str(), portstr.c_str(), &hints, &res);
+
+	// TODO: should do error-checking on getaddrinfo(), and walk
+	// the "res" linked list looking for valid entries instead of just
+	// assuming the first one is good
+	conn = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	if (conn < 0) return SOCKET_ERR;
+
+	debug("finished to create socket");
+
+	if (connect(conn, res->ai_addr, res->ai_addrlen) < 0) {
+		close(conn);
+		debug("No server response on port " << port);
+		return RESPONSE_ERR;
+	}
+#endif
+
 	debug("Connected to server: " << servername);
 	return CONNECTION_SUCCESS;
 }
 
 int JVMLinkClient::closeConnection() {
 	debug("Closing connection");
+#ifdef _WIN32
 	shutdown(conn, SD_SEND);
 	closesocket(conn);
 	debug("Socket closed");
 	WSACleanup();
 	debug("De-initialized WinSock");
+#else
+	close(conn);
+	conn = 0;
+#endif
 	return CONNECTION_SUCCESS;
 }
 
-JVMLinkObject* JVMLinkClient::getVar(CString name) {
+JVMLinkObject* JVMLinkClient::getVar(std::string name) {
 	debug("getVar: requesting " << name);
 	JVMLinkObject* obj = new JVMLinkObject(name);
 	sendInt(GETVAR_CMD);
@@ -125,7 +200,7 @@ JVMLinkObject* JVMLinkClient::getVar(CString name) {
 		obj->insideType = (Type) readInt();
 		obj->length = readInt();
 		if (obj->insideType == STRING_TYPE) {
-			CString* s = new CString[obj->length];
+			std::string* s = new std::string[obj->length];
 			for (int i=0; i<obj->length; i++) s[i] = *readString();
 			obj->data = s;
 		}
@@ -135,7 +210,7 @@ JVMLinkObject* JVMLinkClient::getVar(CString name) {
 		}
 		debug("getVar: got array: length=" << obj->length << ", type=" << obj->insideType);
 	}
-	else if (obj->type == STRING_TYPE) {	
+	else if (obj->type == STRING_TYPE) {
 		obj->data = readString();
 		obj->size = 0;
 		debug("getVar: got string: length=" << len << ", value=" << buf);
@@ -155,7 +230,7 @@ JVMLinkObject* JVMLinkClient::getVar(CString name) {
 	return obj;
 }
 
-void JVMLinkClient::exec(CString command) {
+void JVMLinkClient::exec(std::string command) {
 	debug("exec: " << command);
 	sendInt(EXEC_CMD);
 	sendMessage(command);
@@ -169,7 +244,7 @@ void JVMLinkClient::setVar(JVMLinkObject* obj) {
 		sendInt((int) obj->insideType);
 		sendInt(obj->length);
 		if (obj->insideType == STRING_TYPE) {
-			CString* s = (CString*) obj->data;
+			std::string* s = (std::string*) obj->data;
 			for (int i=0; i<obj->length; i++) {
 				sendMessage(s[i]);
 			}
@@ -184,150 +259,150 @@ void JVMLinkClient::setVar(JVMLinkObject* obj) {
 		}
 	}
 	else {
-		if (obj->type == STRING_TYPE) sendMessage(*(CString*) obj->data);
+		if (obj->type == STRING_TYPE) sendMessage(*(std::string*) obj->data);
 		else send(conn, (char*) obj->data, obj->size, 0);
 	}
 }
 
-void JVMLinkClient::setVar(CString argname, int obj) {
+void JVMLinkClient::setVar(std::string argname, int obj) {
 	debug("setVar: " << argname << " = " << obj << " (int)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, INT_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, int* obj, int length) {
+void JVMLinkClient::setVar(std::string argname, int* obj, int length) {
 	debug("setVar: " << argname << " (int array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, INT_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, CString* obj) {
+void JVMLinkClient::setVar(std::string argname, std::string* obj) {
 	debug("setVar: " << argname << " = " << obj << " (string)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, STRING_TYPE, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, CString* obj, int length) {
+void JVMLinkClient::setVar(std::string argname, std::string* obj, int length) {
 	debug("setVar: " << argname << " (string array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, STRING_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, char obj) {
+void JVMLinkClient::setVar(std::string argname, char obj) {
 	debug("setVar: " << argname << " = " << obj << " (char)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, CHAR_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, char* obj, int length) {
+void JVMLinkClient::setVar(std::string argname, char* obj, int length) {
 	debug("setVar: " << argname << " (char array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, CHAR_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, Byte obj) {
+void JVMLinkClient::setVar(std::string argname, Byte obj) {
 	debug("setVar: " << argname << " = " << obj.data << " (byte)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, BYTE_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, Byte* obj, int length) {
+void JVMLinkClient::setVar(std::string argname, Byte* obj, int length) {
 	debug("setVar: " << argname << " (byte array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, BYTE_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, float obj) {
+void JVMLinkClient::setVar(std::string argname, float obj) {
 	debug("setVar: " << argname << " = " << obj << " (float)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, FLOAT_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, float* obj, int length) {
+void JVMLinkClient::setVar(std::string argname, float* obj, int length) {
 	debug("setVar: " << argname << " (float array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, FLOAT_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, bool obj) {
+void JVMLinkClient::setVar(std::string argname, bool obj) {
 	debug("setVar: " << argname << " = " << obj << " (bool)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, BOOL_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, bool* obj, int length) {
+void JVMLinkClient::setVar(std::string argname, bool* obj, int length) {
 	debug("setVar: " << argname << " (bool array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, BOOL_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, double obj) {
+void JVMLinkClient::setVar(std::string argname, double obj) {
 	debug("setVar: " << argname << " = " << obj << " (double)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, DOUBLE_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, double* obj, int length) {
+void JVMLinkClient::setVar(std::string argname, double* obj, int length) {
 	debug("setVar: " << argname << " (double array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, DOUBLE_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, long long obj) {
+void JVMLinkClient::setVar(std::string argname, long long obj) {
 	debug("setVar: " << argname << " = " << obj << " (long)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, LONG_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, long long* obj, int length) {
+void JVMLinkClient::setVar(std::string argname, long long* obj, int length) {
 	debug("setVar: " << argname << " (long array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, LONG_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, short obj) {
+void JVMLinkClient::setVar(std::string argname, short obj) {
 	debug("setVar: " << argname << " = " << obj << " (short)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, SHORT_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(CString argname, short* obj, int length) {
+void JVMLinkClient::setVar(std::string argname, short* obj, int length) {
 	debug("setVar: " << argname << " (short array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, SHORT_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVarNull(CString argname) {
+void JVMLinkClient::setVarNull(std::string argname) {
 	debug("setVarNull: " << argname);
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, NULL_TYPE, NULL);
 	setVar(jvmObj);
-	delete jvmObj;	
+	delete jvmObj;
 }
 
 // -- Private methods --
 
-void JVMLinkClient::sendMessage(CString message) {
+void JVMLinkClient::sendMessage(std::string message) {
 	int sent = 0;
-	char* buf = (char*) (LPCTSTR) message;
-	int total = message.GetLength();
+	const char* buf = message.c_str();
+	int total = message.length();
 	sendInt(total);
 	while (sent < total) sent += send(conn, buf + sent, total - sent, 0);
 }
@@ -348,11 +423,11 @@ int JVMLinkClient::readInt() {
 	return *(int*) readMessage(4);
 }
 
-CString* JVMLinkClient::readString() {
+std::string* JVMLinkClient::readString() {
 	int read = 0;
 	int total = readInt();
 	char* buf = new char[total + 1];
 	while (read < total) read += recv(conn, buf + read, total - read, 0);
 	buf[total] = '\0';
-	return new CString(buf);
+	return new std::string(buf);
 }

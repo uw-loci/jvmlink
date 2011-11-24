@@ -33,6 +33,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma once
 #include "JVMLinkObject.h"
 
+#include <string>
+
 // NB: Toggle comments to control debugging output for the client.
 #define debug(msg) ((void)0)
 //#define debug(msg) std::cout << "JVMLinkClient: " << msg << std::endl
@@ -41,13 +43,17 @@ class JVMLinkClient
 {
 private:
 	int port;
+#ifdef _WIN32
 	SOCKET conn;
+#else
+	int conn;
+#endif
 
-	void sendMessage(CString);
+	void sendMessage(std::string);
 	void* readMessage(int);
 	void sendInt(int);
 	int readInt();
-	CString* readString();
+	std::string* readString();
 
 public:
 	enum ConnectionCode {
@@ -59,32 +65,32 @@ public:
 	};
 
 	JVMLinkClient();
-	void startJava(int, CString);
+	void startJava(int, std::string);
 	void shutJava();
 	ConnectionCode establishConnection();
 	int closeConnection();
-	JVMLinkObject* getVar(CString);
+	JVMLinkObject* getVar(std::string);
 	void setVar(JVMLinkObject*);
-	void setVar(CString, int);
-	void setVar(CString, int*, int);
-	void setVar(CString, CString*);
-	void setVar(CString, CString*, int);
-	void setVar(CString, char);
-	void setVar(CString, char*, int);
-	void setVar(CString, Byte);
-	void setVar(CString, Byte*, int);
-	void setVar(CString, float);
-	void setVar(CString, float*, int);
-	void setVar(CString, bool);
-	void setVar(CString, bool*, int);
-	void setVar(CString, double);
-	void setVar(CString, double*, int);
-	void setVar(CString, long long);
-	void setVar(CString, long long*, int);
-	void setVar(CString, short);
-	void setVar(CString, short*, int);
-	void setVarNull(CString);
-	void exec(CString);
+	void setVar(std::string, int);
+	void setVar(std::string, int*, int);
+	void setVar(std::string, std::string*);
+	void setVar(std::string, std::string*, int);
+	void setVar(std::string, char);
+	void setVar(std::string, char*, int);
+	void setVar(std::string, Byte);
+	void setVar(std::string, Byte*, int);
+	void setVar(std::string, float);
+	void setVar(std::string, float*, int);
+	void setVar(std::string, bool);
+	void setVar(std::string, bool*, int);
+	void setVar(std::string, double);
+	void setVar(std::string, double*, int);
+	void setVar(std::string, long long);
+	void setVar(std::string, long long*, int);
+	void setVar(std::string, short);
+	void setVar(std::string, short*, int);
+	void setVarNull(std::string);
+	void exec(std::string);
 
 	~JVMLinkClient(void);
 };

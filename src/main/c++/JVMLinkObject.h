@@ -32,6 +32,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
+#include <string>
+#include <vector>
+
+
 enum Command {
 	BYTE_ORDER_CMD = 0,
 	SETVAR_CMD = 1,
@@ -63,21 +67,21 @@ private:
 	int getSize(Type);
 
 public:
-	JVMLinkObject(CString);
-	JVMLinkObject(CString, Type, void*);
-	JVMLinkObject(CString, Type, int, void*);
+	JVMLinkObject(std::string);
+	JVMLinkObject(std::string, Type, void*);
+	JVMLinkObject(std::string, Type, int, void*);
 
 	~JVMLinkObject(void);
 
-	CString name;
+	std::string name;
 	int size, length;
 	Type type, insideType;
 	void* data;
 
 	int getDataAsInt();
 	int* getDataAsIntArray();
-	CString* getDataAsString();
-	CString* getDataAsStringArray();
+	std::string* getDataAsString();
+	std::string* getDataAsStringArray();
 	char getDataAsChar();
 	char* getDataAsCharArray();
 	Byte getDataAsByte();
