@@ -475,14 +475,27 @@ public class ConnThread extends Thread {
       writeInt(arrayLen);
       if (insideType == INT_TYPE) {
         writeInt(4);
-        int[] intArray = (int[]) theArray;
-        for (int i=0; i<arrayLen; i++) {
-          writeInt(intArray[i]);
+        int[] iArray = (int[]) theArray;
+        byte[] bArray = new byte[4*arrayLen];
+        int j=0;
+        if (little) {
+          for (int i=0; i<arrayLen; i++) {
+            int val = iArray[i];
+            bArray[j++] = (byte)( val        & 0xff);
+            bArray[j++] = (byte)((val >>  8) & 0xff);
+            bArray[j++] = (byte)((val >> 16) & 0xff);
+            bArray[j++] = (byte)((val >> 24) & 0xff);
+          }
+        } else {
+          for (int i=0; i<arrayLen; i++) {
+            int val = iArray[i];
+            bArray[j++] = (byte)((val >> 24) & 0xff);
+            bArray[j++] = (byte)((val >> 16) & 0xff);
+            bArray[j++] = (byte)((val >>  8) & 0xff);
+            bArray[j++] = (byte)( val        & 0xff);
+          }
         }
-        if (arrayLen > 10000) {
-          debug("Last two elements are " +
-            intArray[arrayLen-1] + " and " + intArray[arrayLen-2]);
-        }
+        out.write(bArray);
       }
       else if (insideType == STRING_TYPE) {
         // NB: string size is variable
@@ -492,42 +505,129 @@ public class ConnThread extends Thread {
       else if (insideType == BYTE_TYPE) {
         writeInt(1);
         byte[] bArray = (byte[]) theArray;
-        for (int i=0; i<arrayLen; i++) out.writeByte(bArray[i]);
+        out.write(bArray);
       }
       else if (insideType == CHAR_TYPE) {
         writeInt(1);
         char[] cArray = (char[]) theArray;
-        for (int i=0; i<arrayLen; i++) out.writeByte((byte) cArray[i]);
+        byte[] bArray = new byte[arrayLen];
+        for (int i=0; i<arrayLen; i++) bArray[i] = (byte) cArray[i];
+        out.write(bArray);
       }
       else if (insideType == FLOAT_TYPE) {
         writeInt(4);
         float[] fArray = (float[]) theArray;
-        for (int i=0; i<arrayLen; i++) {
-          int intBits = Float.floatToIntBits(fArray[i]);
-          writeInt(intBits);
+        byte[] bArray = new byte[4*arrayLen];
+        int j=0;
+        if (little) {
+          for (int i=0; i<arrayLen; i++) {
+            int val = Float.floatToIntBits(fArray[i]);
+            bArray[j++] = (byte)( val        & 0xff);
+            bArray[j++] = (byte)((val >>  8) & 0xff);
+            bArray[j++] = (byte)((val >> 16) & 0xff);
+            bArray[j++] = (byte)((val >> 24) & 0xff);
+          }
+        } else {
+          for (int i=0; i<arrayLen; i++) {
+            int val = Float.floatToIntBits(fArray[i]);
+            bArray[j++] = (byte)((val >> 24) & 0xff);
+            bArray[j++] = (byte)((val >> 16) & 0xff);
+            bArray[j++] = (byte)((val >>  8) & 0xff);
+            bArray[j++] = (byte)( val        & 0xff);
+          }
         }
+        out.write(bArray);
       }
       else if (insideType == BOOLEAN_TYPE) {
         writeInt(1);
-        boolean[] bArray = (boolean[]) theArray;
-        for (int i=0; i<arrayLen; i++) out.writeBoolean(bArray[i]);
+        boolean[] BArray = (boolean[]) theArray;
+        byte[] bArray = new byte[arrayLen];
+        for (int i=0; i<arrayLen; i++) bArray[i] = (byte) (BArray[i]?1:0);
+        out.write(bArray);
       }
       else if (insideType == DOUBLE_TYPE) {
         writeInt(8);
         double[] dArray = (double[]) theArray;
-        for (int i=0; i<arrayLen; i++) {
-          writeLong(Double.doubleToLongBits(dArray[i]));
+        byte[] bArray = new byte[8*arrayLen];
+        int j=0;
+        if (little) {
+          for (int i=0; i<arrayLen; i++) {
+            long val = Double.doubleToLongBits(dArray[i]);
+            bArray[j++] = (byte)( val        & 0xff);
+            bArray[j++] = (byte)((val >>  8) & 0xff);
+            bArray[j++] = (byte)((val >> 16) & 0xff);
+            bArray[j++] = (byte)((val >> 24) & 0xff);
+            bArray[j++] = (byte)((val >> 32) & 0xff);
+            bArray[j++] = (byte)((val >> 40) & 0xff);
+            bArray[j++] = (byte)((val >> 48) & 0xff);
+            bArray[j++] = (byte)((val >> 56) & 0xff);
+          }
+        } else {
+          for (int i=0; i<arrayLen; i++) {
+            long val = Double.doubleToLongBits(dArray[i]);
+            bArray[j++] = (byte)((val >> 56) & 0xff);
+            bArray[j++] = (byte)((val >> 48) & 0xff);
+            bArray[j++] = (byte)((val >> 40) & 0xff);
+            bArray[j++] = (byte)((val >> 32) & 0xff);
+            bArray[j++] = (byte)((val >> 24) & 0xff);
+            bArray[j++] = (byte)((val >> 16) & 0xff);
+            bArray[j++] = (byte)((val >>  8) & 0xff);
+            bArray[j++] = (byte)( val        & 0xff);
+          }
         }
+        out.write(bArray);
       }
       else if (insideType == LONG_TYPE) {
         writeInt(8);
         long[] lArray = (long[]) theArray;
-        for (int i=0; i<arrayLen; i++) writeLong(lArray[i]);
+        byte[] bArray = new byte[8*arrayLen];
+        int j=0;
+        if (little) {
+          for (int i=0; i<arrayLen; i++) {
+            long val = lArray[i];
+            bArray[j++] = (byte)( val        & 0xff);
+            bArray[j++] = (byte)((val >>  8) & 0xff);
+            bArray[j++] = (byte)((val >> 16) & 0xff);
+            bArray[j++] = (byte)((val >> 24) & 0xff);
+            bArray[j++] = (byte)((val >> 32) & 0xff);
+            bArray[j++] = (byte)((val >> 40) & 0xff);
+            bArray[j++] = (byte)((val >> 48) & 0xff);
+            bArray[j++] = (byte)((val >> 56) & 0xff);
+          }
+        } else {
+          for (int i=0; i<arrayLen; i++) {
+            long val = lArray[i];
+            bArray[j++] = (byte)((val >> 56) & 0xff);
+            bArray[j++] = (byte)((val >> 48) & 0xff);
+            bArray[j++] = (byte)((val >> 40) & 0xff);
+            bArray[j++] = (byte)((val >> 32) & 0xff);
+            bArray[j++] = (byte)((val >> 24) & 0xff);
+            bArray[j++] = (byte)((val >> 16) & 0xff);
+            bArray[j++] = (byte)((val >>  8) & 0xff);
+            bArray[j++] = (byte)( val        & 0xff);
+          }
+        }
+        out.write(bArray);
       }
       else if (insideType == SHORT_TYPE) {
         writeInt(2);
         short[] sArray = (short[]) theArray;
-        for (int i=0; i<arrayLen; i++) writeShort(sArray[i]);
+        byte[] bArray = new byte[2*arrayLen];
+        int j=0;
+        if (little) {
+          for (int i=0; i<arrayLen; i++) {
+            short val = sArray[i];
+            bArray[j++] = (byte)( val       & 0xff);
+            bArray[j++] = (byte)((val >> 8) & 0xff);
+          }
+        } else {
+          for (int i=0; i<arrayLen; i++) {
+            short val = sArray[i];
+            bArray[j++] = (byte)((val >> 8) & 0xff);
+            bArray[j++] = (byte)( val       & 0xff);
+          }
+        }
+        out.write(bArray);
       }
     }
     else if (type == INT_TYPE) {
