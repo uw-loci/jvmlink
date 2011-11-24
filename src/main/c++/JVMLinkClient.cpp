@@ -63,7 +63,7 @@ JVMLinkClient::~JVMLinkClient(void)
 
 // -- Public API methods --
 
-void JVMLinkClient::startJava(int arg_port, std::string classpath) {
+void JVMLinkClient::startJava(int arg_port, const std::string& classpath) {
 	port = arg_port == 0 ? DEFAULT_PORT : arg_port;
 	std::stringstream tmpportstr;
 	tmpportstr << port;
@@ -190,7 +190,7 @@ int JVMLinkClient::closeConnection() {
 	return CONNECTION_SUCCESS;
 }
 
-JVMLinkObject* JVMLinkClient::getVar(std::string name) {
+JVMLinkObject* JVMLinkClient::getVar(const std::string& name) {
 	debug("getVar: requesting " << name);
 	JVMLinkObject* obj = new JVMLinkObject(name);
 	sendInt(GETVAR_CMD);
@@ -230,7 +230,7 @@ JVMLinkObject* JVMLinkClient::getVar(std::string name) {
 	return obj;
 }
 
-void JVMLinkClient::exec(std::string command) {
+void JVMLinkClient::exec(const std::string& command) {
 	debug("exec: " << command);
 	sendInt(EXEC_CMD);
 	sendMessage(command);
@@ -264,133 +264,133 @@ void JVMLinkClient::setVar(JVMLinkObject* obj) {
 	}
 }
 
-void JVMLinkClient::setVar(std::string argname, int obj) {
+void JVMLinkClient::setVar(const std::string& argname, int obj) {
 	debug("setVar: " << argname << " = " << obj << " (int)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, INT_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, int* obj, int length) {
+void JVMLinkClient::setVar(const std::string& argname, int* obj, int length) {
 	debug("setVar: " << argname << " (int array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, INT_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, std::string* obj) {
+void JVMLinkClient::setVar(const std::string& argname, std::string* obj) {
 	debug("setVar: " << argname << " = " << obj << " (string)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, STRING_TYPE, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, std::string* obj, int length) {
+void JVMLinkClient::setVar(const std::string& argname, std::string* obj, int length) {
 	debug("setVar: " << argname << " (string array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, STRING_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, char obj) {
+void JVMLinkClient::setVar(const std::string& argname, char obj) {
 	debug("setVar: " << argname << " = " << obj << " (char)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, CHAR_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, char* obj, int length) {
+void JVMLinkClient::setVar(const std::string& argname, char* obj, int length) {
 	debug("setVar: " << argname << " (char array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, CHAR_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, Byte obj) {
+void JVMLinkClient::setVar(const std::string& argname, Byte obj) {
 	debug("setVar: " << argname << " = " << obj.data << " (byte)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, BYTE_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, Byte* obj, int length) {
+void JVMLinkClient::setVar(const std::string& argname, Byte* obj, int length) {
 	debug("setVar: " << argname << " (byte array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, BYTE_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, float obj) {
+void JVMLinkClient::setVar(const std::string& argname, float obj) {
 	debug("setVar: " << argname << " = " << obj << " (float)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, FLOAT_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, float* obj, int length) {
+void JVMLinkClient::setVar(const std::string& argname, float* obj, int length) {
 	debug("setVar: " << argname << " (float array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, FLOAT_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, bool obj) {
+void JVMLinkClient::setVar(const std::string& argname, bool obj) {
 	debug("setVar: " << argname << " = " << obj << " (bool)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, BOOL_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, bool* obj, int length) {
+void JVMLinkClient::setVar(const std::string& argname, bool* obj, int length) {
 	debug("setVar: " << argname << " (bool array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, BOOL_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, double obj) {
+void JVMLinkClient::setVar(const std::string& argname, double obj) {
 	debug("setVar: " << argname << " = " << obj << " (double)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, DOUBLE_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, double* obj, int length) {
+void JVMLinkClient::setVar(const std::string& argname, double* obj, int length) {
 	debug("setVar: " << argname << " (double array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, DOUBLE_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, long long obj) {
+void JVMLinkClient::setVar(const std::string& argname, long long obj) {
 	debug("setVar: " << argname << " = " << obj << " (long)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, LONG_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, long long* obj, int length) {
+void JVMLinkClient::setVar(const std::string& argname, long long* obj, int length) {
 	debug("setVar: " << argname << " (long array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, LONG_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, short obj) {
+void JVMLinkClient::setVar(const std::string& argname, short obj) {
 	debug("setVar: " << argname << " = " << obj << " (short)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, SHORT_TYPE, &obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVar(std::string argname, short* obj, int length) {
+void JVMLinkClient::setVar(const std::string& argname, short* obj, int length) {
 	debug("setVar: " << argname << " (short array)");
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, SHORT_TYPE, length, obj);
 	setVar(jvmObj);
 	delete jvmObj;
 }
 
-void JVMLinkClient::setVarNull(std::string argname) {
+void JVMLinkClient::setVarNull(const std::string& argname) {
 	debug("setVarNull: " << argname);
 	JVMLinkObject* jvmObj = new JVMLinkObject(argname, NULL_TYPE, NULL);
 	setVar(jvmObj);
@@ -399,7 +399,7 @@ void JVMLinkClient::setVarNull(std::string argname) {
 
 // -- Private methods --
 
-void JVMLinkClient::sendMessage(std::string message) {
+void JVMLinkClient::sendMessage(const std::string& message) {
 	int sent = 0;
 	const char* buf = message.c_str();
 	int total = message.length();

@@ -33,12 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "stdafx.h"
 #include "JVMLinkObject.h"
 
-JVMLinkObject::JVMLinkObject(std::string name) {
+JVMLinkObject::JVMLinkObject(const std::string& name) {
 	this->name = name;
 }
 
 // Constructor for single primitives
-JVMLinkObject::JVMLinkObject(std::string name, Type type, void* data) {
+JVMLinkObject::JVMLinkObject(const std::string& name, Type type, void* data) {
 	this->name = name;
 	this->size = getSize(type);
 	this->length = 1;
@@ -47,7 +47,7 @@ JVMLinkObject::JVMLinkObject(std::string name, Type type, void* data) {
 }
 
 // Constructor for arrays
-JVMLinkObject::JVMLinkObject(std::string name, Type type, int length, void* data) {
+JVMLinkObject::JVMLinkObject(const std::string& name, Type type, int length, void* data) {
 	this->name = name;
 	this->size = getSize(type);
 	this->length = length;

@@ -30,7 +30,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
+
+#ifndef JVMLINKOBJECT_HH
+#define JVMLINKOBJECT_HH
 
 #include <string>
 #include <vector>
@@ -67,9 +69,9 @@ private:
 	int getSize(Type);
 
 public:
-	JVMLinkObject(std::string);
-	JVMLinkObject(std::string, Type, void*);
-	JVMLinkObject(std::string, Type, int, void*);
+	JVMLinkObject(const std::string&);
+	JVMLinkObject(const std::string&, Type, void*);
+	JVMLinkObject(const std::string&, Type, int, void*);
 
 	~JVMLinkObject(void);
 
@@ -98,3 +100,5 @@ public:
 	short* getDataAsShortArray();
 	bool isDataNull();
 };
+
+#endif // JVMLINKOBJECT_HH

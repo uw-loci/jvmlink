@@ -30,7 +30,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#pragma once
+#ifndef JVMLINKCLIENT_HH
+#define JVMLINKCLIENT_HH
+
 #include "JVMLinkObject.h"
 
 #include <string>
@@ -49,7 +51,7 @@ private:
 	int conn;
 #endif
 
-	void sendMessage(std::string);
+	void sendMessage(const std::string&);
 	void* readMessage(int);
 	void sendInt(int);
 	int readInt();
@@ -65,32 +67,34 @@ public:
 	};
 
 	JVMLinkClient();
-	void startJava(int, std::string);
+	void startJava(int, const std::string&);
 	void shutJava();
 	ConnectionCode establishConnection();
 	int closeConnection();
-	JVMLinkObject* getVar(std::string);
+	JVMLinkObject* getVar(const std::string&);
 	void setVar(JVMLinkObject*);
-	void setVar(std::string, int);
-	void setVar(std::string, int*, int);
-	void setVar(std::string, std::string*);
-	void setVar(std::string, std::string*, int);
-	void setVar(std::string, char);
-	void setVar(std::string, char*, int);
-	void setVar(std::string, Byte);
-	void setVar(std::string, Byte*, int);
-	void setVar(std::string, float);
-	void setVar(std::string, float*, int);
-	void setVar(std::string, bool);
-	void setVar(std::string, bool*, int);
-	void setVar(std::string, double);
-	void setVar(std::string, double*, int);
-	void setVar(std::string, long long);
-	void setVar(std::string, long long*, int);
-	void setVar(std::string, short);
-	void setVar(std::string, short*, int);
-	void setVarNull(std::string);
-	void exec(std::string);
+	void setVar(const std::string&, int);
+	void setVar(const std::string&, int*, int);
+	void setVar(const std::string&, std::string*);
+	void setVar(const std::string&, std::string*, int);
+	void setVar(const std::string&, char);
+	void setVar(const std::string&, char*, int);
+	void setVar(const std::string&, Byte);
+	void setVar(const std::string&, Byte*, int);
+	void setVar(const std::string&, float);
+	void setVar(const std::string&, float*, int);
+	void setVar(const std::string&, bool);
+	void setVar(const std::string&, bool*, int);
+	void setVar(const std::string&, double);
+	void setVar(const std::string&, double*, int);
+	void setVar(const std::string&, long long);
+	void setVar(const std::string&, long long*, int);
+	void setVar(const std::string&, short);
+	void setVar(const std::string&, short*, int);
+	void setVarNull(const std::string&);
+	void exec(const std::string&);
 
 	~JVMLinkClient(void);
 };
+
+#endif // JVMLINKCLIENT_HH
