@@ -186,16 +186,16 @@ public class ConnThread extends Thread {
         break;
       }
       catch (IOException exc) {
-        if (JVMLinkServer.debug) exc.printStackTrace();
+        if (server.getDebug()) exc.printStackTrace();
         try {
           Thread.sleep(100);
         }
         catch (InterruptedException exc2) {
-          if (JVMLinkServer.debug) exc2.printStackTrace();
+          if (server.getDebug()) exc2.printStackTrace();
         }
       }
       catch (ReflectException exc) {
-        if (JVMLinkServer.debug) exc.printStackTrace();
+        if (server.getDebug()) exc.printStackTrace();
       }
     }
 
@@ -204,14 +204,14 @@ public class ConnThread extends Thread {
       socket.close();
     }
     catch (IOException exc) {
-      if (JVMLinkServer.debug) exc.printStackTrace();
+      if (server.getDebug()) exc.printStackTrace();
     }
     if (killServer) {
       try {
         server.shutServer();
       }
       catch (IOException exc) {
-        if (JVMLinkServer.debug) exc.printStackTrace();
+        if (server.getDebug()) exc.printStackTrace();
       }
     }
   }
@@ -464,7 +464,7 @@ public class ConnThread extends Thread {
       else debug("Unknown type for value: " + value.getClass().getName());
     }
     catch (ReflectException e) {
-      if (JVMLinkServer.debug) e.printStackTrace();
+      if (server.getDebug()) e.printStackTrace();
     }
 
     writeInt(type);
@@ -661,7 +661,7 @@ public class ConnThread extends Thread {
 
   /** Prints a debugging message if debug mode is enabled. */
   private void debug(String msg) {
-    if (JVMLinkServer.debug) System.out.println(getName() + ": " + msg);
+    if (server.getDebug()) System.out.println(getName() + ": " + msg);
   }
 
   // -- Static utility methods --

@@ -64,7 +64,7 @@ public class JVMLinkServer implements Runnable {
   // -- Static fields --
 
   /** Debugging flag. */
-  protected static boolean debug = false;
+  private boolean debug;
 
   // -- Fields --
 
@@ -94,6 +94,14 @@ public class JVMLinkServer implements Runnable {
     debug("Shutting down");
     alive = false;
     listener.close();
+  }
+
+  public void setDebug(boolean debug) {
+    this.debug = debug;
+  }
+
+  public boolean getDebug() {
+    return this.debug;
   }
 
   // -- Runnable API methods --
@@ -130,17 +138,19 @@ public class JVMLinkServer implements Runnable {
 
   // -- Helper methods --
 
-  private void debug(String msg) {
+  public void debug(String msg) {
     if (debug) System.out.println("JVMLinkServer: " + msg);
   }
 
   // -- Main method --
 
   public static void main(String[] args) throws IOException {
+    boolean debug = false;
     int port = DEFAULT_PORT;
     for (int i=0; i<args.length; i++) {
-      if ("-debug".equals(args[i])) debug = true;
-      else {
+      if ("-debug".equals(args[i])) {
+        debug = true;
+      } else {
         try {
           int num = Integer.parseInt(args[i]);
           if (num < MIN_PORT || num > MAX_PORT) {
@@ -156,6 +166,7 @@ public class JVMLinkServer implements Runnable {
       }
     }
     JVMLinkServer ns = new JVMLinkServer(port);
+    ns.setDebug(debug);
     ns.listen();
   }
 
