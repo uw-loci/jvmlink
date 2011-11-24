@@ -293,6 +293,7 @@ void JVMLinkClient::setVar(const std::string& argname, int obj) {
 
 void JVMLinkClient::setVar(const std::string& argname, int* obj, int length) {
 	debug("setVar: " << argname << " (int array)");
+	if (length < 1) return;
 	JVMLinkObject jvmObj(argname, INT_TYPE, length, obj);
 	setVar(jvmObj);
 }
@@ -305,6 +306,7 @@ void JVMLinkClient::setVar(const std::string& argname, std::string* obj) {
 
 void JVMLinkClient::setVar(const std::string& argname, std::string* obj, int length) {
 	debug("setVar: " << argname << " (string array)");
+	if (length < 1) return;
 	JVMLinkObject jvmObj(argname, STRING_TYPE, length, obj);
 	setVar(jvmObj);
 }
@@ -317,6 +319,7 @@ void JVMLinkClient::setVar(const std::string& argname, char obj) {
 
 void JVMLinkClient::setVar(const std::string& argname, char* obj, int length) {
 	debug("setVar: " << argname << " (char array)");
+	if (length < 1) return;
 	JVMLinkObject jvmObj(argname, CHAR_TYPE, length, obj);
 	setVar(jvmObj);
 }
@@ -329,6 +332,7 @@ void JVMLinkClient::setVar(const std::string& argname, Byte obj) {
 
 void JVMLinkClient::setVar(const std::string& argname, Byte* obj, int length) {
 	debug("setVar: " << argname << " (byte array)");
+	if (length < 1) return;
 	JVMLinkObject jvmObj(argname, BYTE_TYPE, length, obj);
 	setVar(jvmObj);
 }
@@ -341,6 +345,7 @@ void JVMLinkClient::setVar(const std::string& argname, float obj) {
 
 void JVMLinkClient::setVar(const std::string& argname, float* obj, int length) {
 	debug("setVar: " << argname << " (float array)");
+	if (length < 1) return;
 	JVMLinkObject jvmObj(argname, FLOAT_TYPE, length, obj);
 	setVar(jvmObj);
 }
@@ -353,6 +358,7 @@ void JVMLinkClient::setVar(const std::string& argname, bool obj) {
 
 void JVMLinkClient::setVar(const std::string& argname, bool* obj, int length) {
 	debug("setVar: " << argname << " (bool array)");
+	if (length < 1) return;
 	JVMLinkObject jvmObj(argname, BOOL_TYPE, length, obj);
 	setVar(jvmObj);
 }
@@ -365,6 +371,7 @@ void JVMLinkClient::setVar(const std::string& argname, double obj) {
 
 void JVMLinkClient::setVar(const std::string& argname, double* obj, int length) {
 	debug("setVar: " << argname << " (double array)");
+	if (length < 1) return;
 	JVMLinkObject jvmObj(argname, DOUBLE_TYPE, length, obj);
 	setVar(jvmObj);
 }
@@ -377,6 +384,7 @@ void JVMLinkClient::setVar(const std::string& argname, long long obj) {
 
 void JVMLinkClient::setVar(const std::string& argname, long long* obj, int length) {
 	debug("setVar: " << argname << " (long array)");
+	if (length < 1) return;
 	JVMLinkObject jvmObj(argname, LONG_TYPE, length, obj);
 	setVar(jvmObj);
 }
@@ -389,6 +397,7 @@ void JVMLinkClient::setVar(const std::string& argname, short obj) {
 
 void JVMLinkClient::setVar(const std::string& argname, short* obj, int length) {
 	debug("setVar: " << argname << " (short array)");
+	if (length < 1) return;
 	JVMLinkObject jvmObj(argname, SHORT_TYPE, length, obj);
 	setVar(jvmObj);
 }
@@ -422,7 +431,9 @@ void* JVMLinkClient::readMessage(int size) {
 }
 
 int JVMLinkClient::readInt() {
-	return *(int*) readMessage(4);
+	int buf;
+	recv(conn, (char*)&buf, 4, 0);
+	return buf;
 }
 
 std::string* JVMLinkClient::readString() {
