@@ -53,7 +53,6 @@
 
 	<developers>
 		<developer>
-			<id>ansari</id>
 			<name>Hidayath Ansari</name>
 			<url>http://loci.wisc.edu/people/mohammed-hidayath-ansari</url>
 			<organization>UW-Madison LOCI</organization>
@@ -67,7 +66,7 @@
 			</properties>
 		</developer>
 		<developer>
-			<id>curtis</id>
+			<id>ctrueden</id>
 			<name>Curtis Rueden</name>
 			<email>ctrueden@wisc.edu</email>
 			<url>http://loci.wisc.edu/people/curtis-rueden</url>
