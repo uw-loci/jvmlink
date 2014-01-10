@@ -83,6 +83,13 @@
 		</developer>
 	</developers>
 
+	<scm>
+		<connection>scm:git:git://github.com/uw-loci/jvmlink</connection>
+		<developerConnection>scm:git:git@github.com:uw-loci/jvmlink</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/uw-loci/jvmlink</url>
+	</scm>
+
 	<repositories>
 		<!-- NB: for project parent -->
 		<repository>
