@@ -29,9 +29,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>${bio-formats.groupId}</groupId>
-			<artifactId>loci-common</artifactId>
-			<version>${bio-formats.version}</version>
+			<groupId>ome</groupId>
+			<artifactId>formats-common</artifactId>
 		</dependency>
 	</dependencies>
 
