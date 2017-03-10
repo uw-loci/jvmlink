@@ -28,29 +28,31 @@
 
 	<developers>
 		<developer>
-			<name>Hidayath Ansari</name>
-			<url>http://loci.wisc.edu/people/mohammed-hidayath-ansari</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-			<timezone>-6</timezone>
-		</developer>
-		<developer>
 			<id>ctrueden</id>
 			<name>Curtis Rueden</name>
-			<email>ctrueden@wisc.edu</email>
-			<url>http://loci.wisc.edu/people/curtis-rueden</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<url>https://imagej.net/User:Rueden</url>
 			<roles>
-				<role>architect</role>
-				<role>developer</role>
+				<role>founder</role>
+				<role>lead</role>
+				<role>maintainer</role>
 			</roles>
-			<timezone>-6</timezone>
 		</developer>
 	</developers>
+	<contributors>
+		<contributor>
+			<name>Hidayath Ansari</name>
+			<roles><role>founder</role></roles>
+		</contributor>
+		<contributor>
+			<name>Mario Emmenlauer</name>
+			<properties><id>emmenlau</id></properties>
+		</contributor>
+		<contributor>
+			<name>Melissa Linkert</name>
+			<url>https://imagej.net/User:Linkert</url>
+			<properties><id>melissalinkert</id></properties>
+		</contributor>
+	</contributors>
 
 	<scm>
 		<connection>scm:git:git://github.com/uw-loci/jvmlink</connection>
