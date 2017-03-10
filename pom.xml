@@ -19,45 +19,12 @@
 	<description>A library for communicating between a Java Virtual Machine and other programs (e.g., C++ applications) via IP over localhost (or remotely).</description>
 	<url>http://loci.wisc.edu/software/jvmlink</url>
 	<inceptionYear>2008</inceptionYear>
-
 	<licenses>
 		<license>
 			<name>Simplified BSD License</name>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-
-	<dependencies>
-		<dependency>
-			<groupId>ome</groupId>
-			<artifactId>formats-common</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>loci.jvmlink.JVMLinkServer</mainClass>
-							<packageName>loci.jvmlink</packageName>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<configuration>
-					<licenseName>bsd_2</licenseName>
-					<projectName>JVMLink client/server architecture for communicating between Java and
-non-Java programs using sockets.</projectName>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 
 	<developers>
 		<developer>
@@ -99,4 +66,35 @@ non-Java programs using sockets.</projectName>
 		</repository>
 	</repositories>
 
+	<dependencies>
+		<dependency>
+			<groupId>ome</groupId>
+			<artifactId>formats-common</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>loci.jvmlink.JVMLinkServer</mainClass>
+							<packageName>loci.jvmlink</packageName>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<licenseName>bsd_2</licenseName>
+					<projectName>JVMLink client/server architecture for communicating between Java and
+non-Java programs using sockets.</projectName>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
