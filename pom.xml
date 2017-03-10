@@ -17,7 +17,7 @@
 
 	<name>JVMLink</name>
 	<description>A library for communicating between a Java Virtual Machine and other programs (e.g., C++ applications) via IP over localhost (or remotely).</description>
-	<url>http://loci.wisc.edu/software/jvmlink</url>
+	<url>https://loci.wisc.edu/software/jvmlink</url>
 	<inceptionYear>2008</inceptionYear>
 	<licenses>
 		<license>
@@ -64,7 +64,7 @@
 	<repositories>
 		<repository>
 			<id>imagej.public</id>
-			<url>http://maven.imagej.net/content/groups/public</url>
+			<url>https://maven.imagej.net/content/groups/public</url>
 		</repository>
 	</repositories>
 
