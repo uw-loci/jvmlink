@@ -6,12 +6,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>loci</groupId>
-		<artifactId>pom-loci</artifactId>
-		<version>2.0.0</version>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>14.0.0</version>
 		<relativePath />
 	</parent>
 
+	<groupId>loci</groupId>
 	<artifactId>jvmlink</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 
@@ -19,6 +20,10 @@
 	<description>A library for communicating between a Java Virtual Machine and other programs (e.g., C++ applications) via IP over localhost (or remotely).</description>
 	<url>https://loci.wisc.edu/software/jvmlink</url>
 	<inceptionYear>2008</inceptionYear>
+	<organization>
+		<name>LOCI</name>
+		<url>https://loci.wisc.edu/</url>
+	</organization>
 	<licenses>
 		<license>
 			<name>Simplified BSD License</name>
@@ -54,12 +59,38 @@
 		</contributor>
 	</contributors>
 
+	<mailingLists>
+		<mailingList>
+			<name>LOCI Software</name>
+			<subscribe>https://loci.wisc.edu/mailman/listinfo/loci-software</subscribe>
+			<unsubscribe>https://loci.wisc.edu/mailman/listinfo/loci-software</unsubscribe>
+			<post>loci-software@loci.wisc.edu</post>
+			<archive>https://loci.wisc.edu/pipermail/loci-software/</archive>
+		</mailingList>
+	</mailingLists>
+
 	<scm>
 		<connection>scm:git:git://github.com/uw-loci/jvmlink</connection>
 		<developerConnection>scm:git:git@github.com:uw-loci/jvmlink</developerConnection>
 		<tag>HEAD</tag>
 		<url>https://github.com/uw-loci/jvmlink</url>
 	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/uw-loci/jvmlink/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/uw-loci/jvmlink</url>
+	</ciManagement>
+
+	<properties>
+		<package-name>loci.jvmlink</package-name>
+		<license.licenseName>bsd_2</license.licenseName>
+		<license.copyrightOwners>Board of Regents of the University of
+Wisconsin-Madison.</license.copyrightOwners>
+		<license.projectName>JVMLink client/server architecture for communicating between Java and</license.projectName>
+	</properties>
 
 	<repositories>
 		<repository>
@@ -70,8 +101,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>ome</groupId>
-			<artifactId>formats-common</artifactId>
+			<groupId>org.openmicroscopy</groupId>
+			<artifactId>ome-common</artifactId>
 		</dependency>
 	</dependencies>
 
