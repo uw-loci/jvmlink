@@ -85,11 +85,13 @@
 	</ciManagement>
 
 	<properties>
+		<main-class>loci.jvmlink.JVMLinkServer</main-class>
 		<package-name>loci.jvmlink</package-name>
 		<license.licenseName>bsd_2</license.licenseName>
 		<license.copyrightOwners>Board of Regents of the University of
 Wisconsin-Madison.</license.copyrightOwners>
-		<license.projectName>JVMLink client/server architecture for communicating between Java and</license.projectName>
+		<license.projectName>JVMLink client/server architecture for communicating between Java and
+non-Java programs using sockets.</license.projectName>
 	</properties>
 
 	<repositories>
@@ -105,29 +107,4 @@ Wisconsin-Madison.</license.copyrightOwners>
 			<artifactId>scijava-common</artifactId>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>loci.jvmlink.JVMLinkServer</mainClass>
-							<packageName>loci.jvmlink</packageName>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<configuration>
-					<licenseName>bsd_2</licenseName>
-					<projectName>JVMLink client/server architecture for communicating between Java and
-non-Java programs using sockets.</projectName>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
