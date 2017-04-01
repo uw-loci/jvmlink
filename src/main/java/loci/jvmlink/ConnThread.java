@@ -41,9 +41,9 @@ import java.lang.reflect.Array;
 import java.net.Socket;
 import java.net.SocketException;
 
-import loci.common.DataTools;
-import loci.common.ReflectException;
-import loci.common.ReflectedUniverse;
+import org.scijava.util.Bytes;
+import org.scijava.util.ReflectException;
+import org.scijava.util.ReflectedUniverse;
 
 //TODO: Communicating exceptions ..
 
@@ -213,7 +213,7 @@ public class ConnThread extends Thread {
   /** Changes the byte order between big and little endian. */
   private void byteOrder() throws IOException {
     int bigType = in.readInt();
-    int littleType = DataTools.swap(bigType);
+    int littleType = Bytes.swap(bigType);
     if (bigType == ORDER_VALUE) little = false; // big endian
     else if (littleType == ORDER_VALUE) little = true; // little endian
     else debug("Invalid byte order value: 0x" + Integer.toString(bigType, 16));
@@ -245,7 +245,7 @@ public class ConnThread extends Thread {
           in.readFully(b, 0, packetSize);
           for (int i=0; i<packetSize/4; i++) {
             intArray[i + (readBytes/4)] =
-              DataTools.bytesToInt(b, 4*i, little);
+              Bytes.toInt(b, 4*i, little);
           }
           readBytes += packetSize;
         }
@@ -301,7 +301,7 @@ public class ConnThread extends Thread {
           in.readFully(b, 0, packetSize);
           for (int i=0; i<packetSize/4; i++) {
             floatArray[i + readBytes/4] =
-              Float.intBitsToFloat(DataTools.bytesToInt(b, 4*i, little));
+              Float.intBitsToFloat(Bytes.toInt(b, 4*i, little));
           }
           readBytes += packetSize;
         }
@@ -336,7 +336,7 @@ public class ConnThread extends Thread {
           in.readFully(b, 0, packetSize);
           for (int i=0; i<packetSize/8; i++) {
             doubleArray[i + readBytes/8] =
-              Double.longBitsToDouble(DataTools.bytesToLong(b, 8*i, little));
+              Double.longBitsToDouble(Bytes.toLong(b, 8*i, little));
           }
           readBytes += packetSize;
         }
@@ -354,7 +354,7 @@ public class ConnThread extends Thread {
           in.readFully(b, 0, packetSize);
           for (int i=0; i<packetSize/8; i++) {
             longArray[i + readBytes/8] =
-              DataTools.bytesToLong(b, 8*i, little);
+              Bytes.toLong(b, 8*i, little);
           }
           readBytes += packetSize;
         }
@@ -372,7 +372,7 @@ public class ConnThread extends Thread {
           in.readFully(b, 0, packetSize);
           for (int i=0; i<packetSize/2; i++) {
             shortArray[i + readBytes/2] =
-              DataTools.bytesToShort(b, 2*i, little);
+              Bytes.toShort(b, 2*i, little);
           }
           readBytes += packetSize;
         }
@@ -695,21 +695,21 @@ public class ConnThread extends Thread {
   /** Reads a short from the socket with the correct endianness. */
   private short readShort() throws IOException {
     short value = in.readShort();
-    if (little) value = DataTools.swap(value);
+    if (little) value = Bytes.swap(value);
     return value;
   }
 
   /** Reads an int from the socket with the correct endianness. */
   private int readInt() throws IOException {
     int value = in.readInt();
-    if (little) value = DataTools.swap(value);
+    if (little) value = Bytes.swap(value);
     return value;
   }
 
   /** Reads a long from the socket with the correct endianness. */
   private long readLong() throws IOException {
     long value = in.readLong();
-    if (little) value = DataTools.swap(value);
+    if (little) value = Bytes.swap(value);
     return value;
   }
 
@@ -717,7 +717,7 @@ public class ConnThread extends Thread {
   private float readFloat() throws IOException {
     float readFloat = in.readFloat();
     int intRep = Float.floatToIntBits(readFloat);
-    if (little) intRep = DataTools.swap(intRep);
+    if (little) intRep = Bytes.swap(intRep);
     float value = Float.intBitsToFloat(intRep);
     return value;
   }
@@ -726,7 +726,7 @@ public class ConnThread extends Thread {
   private double readDouble() throws IOException {
     double readDouble = in.readDouble();
     long longRep = Double.doubleToLongBits(readDouble);
-    if (little) longRep = DataTools.swap(longRep);
+    if (little) longRep = Bytes.swap(longRep);
     double value = Double.longBitsToDouble(longRep);
     return value;
   }
@@ -741,17 +741,17 @@ public class ConnThread extends Thread {
 
   /** Writes the given short to the socket with the correct endianness. */
   private void writeShort(short value) throws IOException {
-    out.writeShort(little ? DataTools.swap(value) : value);
+    out.writeShort(little ? Bytes.swap(value) : value);
   }
 
   /** Writes the given int to the socket with the correct endianness. */
   private void writeInt(int value) throws IOException {
-    out.writeInt(little ? DataTools.swap(value) : value);
+    out.writeInt(little ? Bytes.swap(value) : value);
   }
 
   /** Writes the given long to the socket with the correct endianness. */
   private void writeLong(long value) throws IOException {
-    out.writeLong(little ? DataTools.swap(value) : value);
+    out.writeLong(little ? Bytes.swap(value) : value);
   }
 
   /** Writes the given string to the socket. */

@@ -101,8 +101,8 @@ Wisconsin-Madison.</license.copyrightOwners>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.openmicroscopy</groupId>
-			<artifactId>ome-common</artifactId>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-common</artifactId>
 		</dependency>
 	</dependencies>
 
