@@ -40,7 +40,7 @@ import java.net.SocketTimeoutException;
 /**
  * Java server for JVMLink. Clients can connect to the server and issue
  * arbitrary Java commands according to the legal syntax of the
- * {@link loci.common.ReflectedUniverse} class.
+ * {@link org.scijava.util.ReflectedUniverse} class.
  *
  * @author Hidayath Ansari
  */
