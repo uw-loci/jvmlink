@@ -92,6 +92,9 @@
 Wisconsin-Madison.</license.copyrightOwners>
 		<license.projectName>JVMLink client/server architecture for communicating between Java and
 non-Java programs using sockets.</license.projectName>
+
+		<!-- NB: Deploy releases to the ImageJ Maven repository. -->
+		<releaseProfiles>deploy-to-imagej</releaseProfiles>
 	</properties>
 
 	<repositories>
